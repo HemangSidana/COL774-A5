@@ -86,12 +86,12 @@ class ObliqueDecisionTree:
         
         node.split_value = best_threshold
         node.feature_combination = feature_combination
-        node.weights = feature_combination  # Store as an array
+        node.weights = feature_combination  
 
         self.node_info.append([node.node_id, node.weights, node.split_value])
 
-        node.left = self._build_tree(X[left_mask], y[left_mask], depth + 1, 2 * node_id)  # Left child
-        node.right = self._build_tree(X[right_mask], y[right_mask], depth + 1, 2 * node_id + 1)  # Right child
+        node.left = self._build_tree(X[left_mask], y[left_mask], depth + 1, 2 * node_id)  
+        node.right = self._build_tree(X[right_mask], y[right_mask], depth + 1, 2 * node_id + 1)  
         
         return node
 
@@ -195,9 +195,9 @@ def test_pruned(train_file, val_file, test_file, prediction_file, weight_file):
     X_val = val_data.drop('target', axis=1).values
     Y_val = val_data['target'].values
 
-    tree = ObliqueDecisionTree(max_depth=1000,min_samples_split=100)
+    tree = ObliqueDecisionTree(max_depth=20,min_samples_split=100)
     tree.fit(X, Y)
-    # tree.save_weights_to_csv('weights4_unprune.csv')
+
     tree.prune_tree(X_val, Y_val)
     tree.save_weights_to_csv(weight_file)
 
@@ -216,8 +216,6 @@ def test_pruned(train_file, val_file, test_file, prediction_file, weight_file):
 
 
 def main():
-    # python comp_decision_tree.py test train.csv val.csv test.csv prediction.csv weight.csv
-    # write for above
     if len(sys.argv) < 5:
         print("Usage: python comp_decision_tree.py test train.csv val.csv test.csv prediction.csv weight.csv")
         sys.exit(1)

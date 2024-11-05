@@ -84,12 +84,12 @@ class ObliqueDecisionTree:
         
         node.split_value = best_threshold
         node.feature_combination = feature_combination
-        node.weights = feature_combination  # Store as an array
+        node.weights = feature_combination 
 
         self.node_info.append([node.node_id, node.weights, node.split_value])
 
-        node.left = self._build_tree(X[left_mask], y[left_mask], depth + 1, 2 * node_id)  # Left child
-        node.right = self._build_tree(X[right_mask], y[right_mask], depth + 1, 2 * node_id + 1)  # Right child
+        node.left = self._build_tree(X[left_mask], y[left_mask], depth + 1, 2 * node_id)  
+        node.right = self._build_tree(X[right_mask], y[right_mask], depth + 1, 2 * node_id + 1)  
         
         return node
 
@@ -185,22 +185,22 @@ class ObliqueDecisionTree:
 
 
 def train_unpruned(train_file, max_depth, weight_file):
-    data = pd.read_csv(train_file ,header=None)
-    X = data.drop(data.columns[-1], axis=1).values
-    Y = data[data.columns[-1]].values
+    data = pd.read_csv(train_file)
+    X = data.drop('target', axis=1).values
+    Y = data['target'].values
     tree = ObliqueDecisionTree(max_depth=max_depth)
     tree.fit(X, Y)
     tree.save_weights_to_csv(weight_file)
 
 
 def train_pruned(train_file, val_file, max_depth, weight_file):
-    data = pd.read_csv(train_file,header=None)
-    X = data.drop(data.columns[-1], axis=1).values
-    Y = data[data.columns[-1]].values
+    data = pd.read_csv(train_file)
+    X = data.drop('target', axis=1).values
+    Y = data['target'].values
 
-    val_data = pd.read_csv(val_file, header=None)
-    X_val = val_data.drop(val_data.columns[-1], axis=1).values
-    Y_val = val_data[val_data.columns[-1]].values
+    val_data = pd.read_csv(val_file)
+    X_val = val_data.drop('target', axis=1).values
+    Y_val = val_data['target'].values
 
     tree = ObliqueDecisionTree(max_depth=max_depth)
     tree.fit(X, Y)
@@ -219,11 +219,9 @@ def test_pruned(train_file, val_file, test_file, max_depth, prediction_file):
 
     tree = ObliqueDecisionTree(max_depth=max_depth)
     tree.fit(X, Y)
-    tree.save_weights_to_csv('weights_real_unpruned.csv')
-
+    
     tree.prune_tree(X_val, Y_val)
-    tree.save_weights_to_csv('weights_real_pruned.csv')
-
+    
     test_data = pd.read_csv(test_file)
     if 'target' in test_data.columns:
         X_test = test_data.drop('target', axis=1).values
